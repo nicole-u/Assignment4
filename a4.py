@@ -7,7 +7,7 @@
 # Nicole Utama
 # nutama@uci.edu
 # 20267081
-from pathlib import Path
+
 from Profile import *
 import ui
 
