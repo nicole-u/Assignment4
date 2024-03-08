@@ -1,6 +1,6 @@
 import WebAPI
 
-api_key = "c0a60fb3ace4ff1ea2748e5319a9ee72"
+fm_api_key = "c0a60fb3ace4ff1ea2748e5319a9ee72"
 api_secret = "b53553283cc9dd90e82c436112353517"
 
 class LastFM(WebAPI.web_api):
@@ -17,17 +17,17 @@ class LastFM(WebAPI.web_api):
         WebAPI.web_api.set_apikey(self, apikey)
 
     def load_data(self) -> None:
-        if self.user == None:
+        if self.user is None:
             raise ValueError("No username detected. Please try again.")
-        top_tracks = f"http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user={self.user}&api_key={api_key}&format=json"
+        top_tracks = f"http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user={self.user}&api_key={fm_api_key}&format=json"
         fm_track_data = self._download_url(top_tracks)
         if type(fm_track_data) == None:
             raise TypeError("Error with downloading track data from LastFM.")
         self.fav_track = fm_track_data['toptracks']['track'][0]['name']
         # print(f"{self.user}'s favorite track is {self.fav_track}.")
-        top_artists = f"http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={self.user}&api_key={api_key}&format=json"
+        top_artists = f"http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={self.user}&api_key={fm_api_key}&format=json"
         fm_artist_data = self._download_url(top_artists)
-        if type(fm_artist_data) == None:
+        if type(fm_artist_data) is None:
             raise TypeError("Error with downloading artist data from LastFM.")
         self.fav_artist = fm_artist_data['topartists']['artist'][0]['name']
         # print(f"{self.user}'s favorite artist is {self.fav_artist}.")
@@ -42,7 +42,7 @@ class LastFM(WebAPI.web_api):
         accepted_keyword = "@lastfm"
         if accepted_keyword not in message:
             raise ValueError("No keyword found in message.")
-        track_or_artist = input("Would you like to display your favorite tracks or artists?").lower()
+        track_or_artist = input("Would you like to display your favorite tracks or artists?\n").lower()
         if track_or_artist[0] == "t":
             transcluded = message.replace(accepted_keyword, self.fav_track)
         elif track_or_artist[0] == "a":

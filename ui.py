@@ -42,7 +42,7 @@ def c_command(directoryPath, file_name):
         new_bio = input("Please type a short bio for this file.\n")
         profile.bio = new_bio
         new_file = open(p, "x")
-        profile.dsuserver = str(input("What server would you like to save to?"))
+        profile.dsuserver = str(input("What server would you like to save to?\n"))
         profile.save_profile(filepath)
         print(f"{filepath} created\n")
 
@@ -81,11 +81,11 @@ def p_command(option, path, filename):
     elif option == "-post":
         ids = input("What post would you like to print? Please enter integers only.\n")
         try:
-            print(profile._posts[int(ids)])
+            print(profile._posts[int(ids)]['entry'])
         except IndexError or ValueError:
             ids = input("Invalid. Please try again.\n")
         finally:
-            confirm = input("Do you want to post this online? (y/n)")
+            confirm = input("Do you want to post this online? (y/n)\n")
             if confirm.lower() == "y":
                 post_online(path, filename, profile._posts[int(ids)])
             else:
@@ -139,9 +139,11 @@ def e_command(option, path, filename):
     elif option == "-addpost":
         print("New options available! The dev has now added keywords.")
         print("@weather - access OpenWeather API to tell everyone the weather in your area!")
-        print("Zip code required.")
+        print("Available options: current temp, description, sunset.")
+        print("Note: A valid US zip code is required for this functionality.")
         print("@lastfm - access LastFM API to show everyone your favorite tracks or artists!")
-        print("LastFM account required.")
+        print("Available options: your top tracks, your top artists.")
+        print("Note: A LastFM account is required for this functionality.")
         new_entry = input("Please type your new post.\n")
         new_post = Post(new_entry)
         profile.add_post(new_post)
@@ -159,30 +161,31 @@ def e_command(option, path, filename):
         profile.save_profile(filepath)
         print("Post successfully deleted.\n")
 
-def ui_api_bridge(message: str):
+def ui_api_bridge(message: str) -> str:
     accepted_keywords = ["@weather", "@lastfm"]
     if accepted_keywords[0] in message:
-        zipcode = input("Please input a valid US zipcode.")
+        zipcode = input("Please input a valid US zipcode.\n")
         openweather = weather.OpenWeather(zipcode, "US")
         openweather.set_apikey(weather_api_key)
         openweather.load_data()
         transcluded_msg = openweather.transclude(message)
     if accepted_keywords[1] in message:
-        fm_user = input("Please input your LastFM username.")
+        fm_user = input("Please input your LastFM username.\n")
         last_fm = fm.LastFM(fm_user)
         last_fm.set_apikey(fm_api_key)
         last_fm.load_data()
         transcluded_msg = last_fm.transclude(message)
     if accepted_keywords[0] in message and accepted_keywords[1] in message:
-        zipcode = input("Please input a valid US zipcode.")
-        fm_user = input("Please input your LastFM username.")
+        zipcode = input("Please input a valid US zipcode.\n")
+        fm_user = input("Please input your LastFM username.\n")
         openweather = weather.OpenWeather(zipcode, "US")
         last_fm = fm.LastFM(fm_user)
         openweather.set_apikey(weather_api_key)
         last_fm.set_apikey(fm_api_key)
         openweather.load_data()
         last_fm.load_data()
-        transcluded_msg = openweather.transclude(message)
+        transcluded_msg1 = openweather.transclude(message)
+        transcluded_msg = last_fm.transclude(transcluded_msg1)
     return transcluded_msg
 
 def post_online(path, filename, post: str):
@@ -195,10 +198,10 @@ def post_online(path, filename, post: str):
     current_user = profile.username
     current_pwd = profile.password
     simul_post = input("Do you want to include your bio with this post? (y/n)\n").lower()
-    ui_api_bridge(str(post))
+    transcluded_post = ui_api_bridge(str(post['entry']))
     if simul_post == "y":
         current_bio = profile.bio
         server = profile.dsuserver
-        dsc.send(server, DSU_PORT, current_user, current_pwd, str(post['entry']), current_bio)
+        dsc.send(server, DSU_PORT, current_user, current_pwd, transcluded_post, current_bio)
     else:
-        dsc.send(server, DSU_PORT, current_user, current_pwd, str(post['entry']))
+        dsc.send(server, DSU_PORT, current_user, current_pwd, transcluded_post)

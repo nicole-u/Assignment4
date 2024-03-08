@@ -14,7 +14,7 @@ class web_api(ABC):
             r_obj = json.loads(json_results)
 
         except error.HTTPError as e:
-            print('Failed to download contents of URL')
+            print('Failed to download contents of URL.')
             print(f'Status code: {e.code}')
 
         except requests.ConnectionError:
