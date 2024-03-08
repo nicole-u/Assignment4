@@ -12,10 +12,13 @@
 from pathlib import Path
 from Profile import *
 import ds_client as dsc
+import OpenWeather as weather
+import Last_FM as fm
 
 profile = Profile()
 DSU_PORT = 3021
-
+weather_api_key = "37678f5231ba3e6702a5bf80a140f947"
+fm_api_key = "c0a60fb3ace4ff1ea2748e5319a9ee72"
 
 def c_command(directoryPath, file_name):
     """
@@ -134,6 +137,11 @@ def e_command(option, path, filename):
         profile.save_profile(filepath)
         print(f"Successfully changed bio to {profile.bio}.\n")
     elif option == "-addpost":
+        print("New options available! The dev has now added keywords.")
+        print("@weather - access OpenWeather API to tell everyone the weather in your area!")
+        print("Zip code required.")
+        print("@lastfm - access LastFM API to show everyone your favorite tracks or artists!")
+        print("LastFM account required.")
         new_entry = input("Please type your new post.\n")
         new_post = Post(new_entry)
         profile.add_post(new_post)
@@ -151,6 +159,16 @@ def e_command(option, path, filename):
         profile.save_profile(filepath)
         print("Post successfully deleted.\n")
 
+def transclude_helper(message: str):
+    accepted_keywords = ["@weather", "@lastfm"]
+    if accepted_keywords[0] in message:
+        zipcode = input("Please input a valid US zipcode.")
+        openweather = weather.OpenWeather(zipcode, "US")
+        openweather.set_apikey()
+        openweather.load_data()
+        openweather.transclude(message)
+    if accepted_keywords[1] in message:
+        fm_user = input("Please input your LastFM username.")
 
 def post_online(path, filename, post: str):
     """
@@ -162,6 +180,7 @@ def post_online(path, filename, post: str):
     current_user = profile.username
     current_pwd = profile.password
     simul_post = input("Do you want to include your bio with this post? (y/n)\n").lower()
+    # TODO: integrate OpenWeather and Last_FM in here
     if simul_post == "y":
         current_bio = profile.bio
         server = profile.dsuserver

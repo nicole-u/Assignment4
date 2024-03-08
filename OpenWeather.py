@@ -1,28 +1,14 @@
-import urllib
-import json
-from urllib import request, error
+import WebAPI
 
-def _download_url(url_to_download: str) -> dict:
-    response = None
-    r_obj = None
+def kelvin_to_fahrenheit(k_temp):
+    """
+    A function that takes Kelvin temperatures and converts
+    them to Fahrenheit.
+    """
+    f_temp = round((float(k_temp) - 273.15) * 9/5 + 32)
+    return f_temp
 
-    try:
-        response = urllib.request.urlopen(url_to_download)
-        json_results = response.read()
-        r_obj = json.loads(json_results)
-
-    except urllib.error.HTTPError as e:
-        print('Failed to download contents of URL')
-        print(f'Status code: {e.code}')
-
-    finally:
-        if response is not None:
-            response.close()
-
-    return r_obj
-
-
-class OpenWeather():
+class OpenWeather(WebAPI.web_api):
     """
     A class that handles getting the data
     from the OpenWeather API and passes it
@@ -42,13 +28,12 @@ class OpenWeather():
         self.city = None
         self.sunset = None
 
-    def set_apikey(self, apikey: str) -> None:
-        '''
-        Sets the apikey required to make requests to a web API.
-        :param apikey: The apikey supplied by the API service
-        '''
-        self.api_key = apikey
-        return self.api_key
+    def _download_url(self, url_to_download: str) -> dict:
+        downloaded = WebAPI.web_api._download_url(self, url_to_download)
+        return downloaded
+
+    def set_apikey(self, apikey: str):
+        WebAPI.web_api.set_apikey(self, apikey)
 
     def load_data(self) -> None:
         '''
@@ -58,13 +43,13 @@ class OpenWeather():
         if self.api_key is None:
             raise ValueError("No API key has been inputted.")
         url = f"http://api.openweathermap.org/data/2.5/weather?zip={self.zipcode},{self.country}&appid={self.api_key}"
-        returned_data = _download_url(url)
+        returned_data = self._download_url(url)
         self.longitude = returned_data['coord']['lon']
         self.latitude = returned_data['coord']['lat']
         self.description = returned_data['weather'][0]['description']
-        self.temperature = returned_data['main']['temp']
-        self.high_temp = returned_data['main']['temp_max']
-        self.low_temp = returned_data['main']['temp_min']
+        self.temperature = kelvin_to_fahrenheit(returned_data['main']['temp'])
+        self.high_temp = kelvin_to_fahrenheit(returned_data['main']['temp_max'])
+        self.low_temp = kelvin_to_fahrenheit(returned_data['main']['temp_min'])
         self.humidity = returned_data['main']['humidity']
         self.city = returned_data['name']
         self.sunset = returned_data['sys']['sunset']
@@ -80,4 +65,5 @@ class OpenWeather():
         if accepted_keyword not in message:
             raise ValueError("No keyword found in message.")
         transcluded = message.replace(accepted_keyword, self.description)
+
         return transcluded
