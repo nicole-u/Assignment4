@@ -44,6 +44,8 @@ class OpenWeather(WebAPI.web_api):
             raise ValueError("No API key has been inputted.")
         url = f"http://api.openweathermap.org/data/2.5/weather?zip={self.zipcode},{self.country}&appid={self.api_key}"
         returned_data = self._download_url(url)
+        if type(returned_data) == None:
+            raise TypeError("Error with downloading data from OpenWeather.")
         self.longitude = returned_data['coord']['lon']
         self.latitude = returned_data['coord']['lat']
         self.description = returned_data['weather'][0]['description']

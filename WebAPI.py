@@ -20,6 +20,10 @@ class web_api(ABC):
         except requests.ConnectionError:
             print("Could not connect to server.")
 
+        except error.URLError as err:
+            print("Error with URL.")
+            print(f"Status code: {err}")
+
         except json.JSONDecodeError:
             print("Error with JSON file.")
 

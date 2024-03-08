@@ -1,5 +1,6 @@
-from OpenWeather import OpenWeather
 from random import randint
+from OpenWeather import OpenWeather
+
 
 zipcode = "92617"
 ccode = "US"

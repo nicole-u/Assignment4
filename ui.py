@@ -159,16 +159,31 @@ def e_command(option, path, filename):
         profile.save_profile(filepath)
         print("Post successfully deleted.\n")
 
-def transclude_helper(message: str):
+def ui_api_bridge(message: str):
     accepted_keywords = ["@weather", "@lastfm"]
     if accepted_keywords[0] in message:
         zipcode = input("Please input a valid US zipcode.")
         openweather = weather.OpenWeather(zipcode, "US")
-        openweather.set_apikey()
+        openweather.set_apikey(weather_api_key)
         openweather.load_data()
-        openweather.transclude(message)
+        transcluded_msg = openweather.transclude(message)
     if accepted_keywords[1] in message:
         fm_user = input("Please input your LastFM username.")
+        last_fm = fm.LastFM(fm_user)
+        last_fm.set_apikey(fm_api_key)
+        last_fm.load_data()
+        transcluded_msg = last_fm.transclude(message)
+    if accepted_keywords[0] in message and accepted_keywords[1] in message:
+        zipcode = input("Please input a valid US zipcode.")
+        fm_user = input("Please input your LastFM username.")
+        openweather = weather.OpenWeather(zipcode, "US")
+        last_fm = fm.LastFM(fm_user)
+        openweather.set_apikey(weather_api_key)
+        last_fm.set_apikey(fm_api_key)
+        openweather.load_data()
+        last_fm.load_data()
+        transcluded_msg = openweather.transclude(message)
+    return transcluded_msg
 
 def post_online(path, filename, post: str):
     """
@@ -180,7 +195,7 @@ def post_online(path, filename, post: str):
     current_user = profile.username
     current_pwd = profile.password
     simul_post = input("Do you want to include your bio with this post? (y/n)\n").lower()
-    # TODO: integrate OpenWeather and Last_FM in here
+    ui_api_bridge(str(post))
     if simul_post == "y":
         current_bio = profile.bio
         server = profile.dsuserver
