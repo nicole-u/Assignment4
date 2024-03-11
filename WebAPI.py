@@ -3,7 +3,7 @@ from urllib import request, error
 import json
 import requests
 
-class web_api(ABC):
+class WebAPI(ABC):
     def _download_url(self, url_to_download: str) -> dict:
         response = None
         r_obj = None

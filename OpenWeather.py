@@ -4,7 +4,7 @@ downloading from the OpenWeather online API.
 """
 
 import WebAPI
-
+DEV_API_KEY = "37678f5231ba3e6702a5bf80a140f947"
 
 def kelvin_to_fahrenheit(k_temp):
     """
@@ -15,7 +15,7 @@ def kelvin_to_fahrenheit(k_temp):
     return f_temp
 
 
-class OpenWeather(WebAPI.web_api):
+class OpenWeather(WebAPI.WebAPI):
     """
     A class that handles getting the data
     from the OpenWeather API and passes it
@@ -36,11 +36,15 @@ class OpenWeather(WebAPI.web_api):
         self.sunset = None
 
     def _download_url(self, url_to_download: str) -> dict:
-        downloaded = WebAPI.web_api._download_url(self, url_to_download)
+        downloaded = WebAPI.WebAPI._download_url(self, url_to_download)
         return downloaded
 
     def set_apikey(self, apikey: str):
-        WebAPI.web_api.set_apikey(self, apikey)
+        try:
+            WebAPI.WebAPI.set_apikey(self, apikey)
+        except:
+            print("Error with API key.")
+            WebAPI.WebAPI.set_apikey(self, DEV_API_KEY)
 
     def load_data(self) -> None:
         '''
@@ -62,7 +66,7 @@ class OpenWeather(WebAPI.web_api):
             self.city = returned_data['name']
             self.sunset = returned_data['sys']['sunset']
         except TypeError:
-            print("Error with retrieving data from URL. ")
+            print("Data retrieval failure because of an error with the URL.")
 
     def transclude(self, message: str, keyword= "@weather") -> str:
         '''
@@ -71,12 +75,10 @@ class OpenWeather(WebAPI.web_api):
 
         :returns: The transcluded message
         '''
-        transclude_word = keyword
-        if transclude_word not in message:
+        if keyword not in message:
             raise ValueError("No keyword found in message.")
-        if transclude_word == "@temp":
-            transcluded = message.replace(transclude_word, str(self.temperature))
-        elif transclude_word == "@weather":
-            transcluded = message.replace(transclude_word, self.description)
-
-        return transcluded
+        if keyword == "@temp":
+            transcluded_msg = message.replace(keyword, str(self.temperature))
+        elif keyword == "@weather":
+            transcluded_msg = message.replace(keyword, self.description)
+        return transcluded_msg

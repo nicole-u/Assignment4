@@ -139,10 +139,10 @@ def e_command(option, path, filename):
     elif option == "-addpost":
         print("New options available! The dev has now added keywords.")
         print("@weather - access OpenWeather API to tell everyone the weather in your area!")
-        print("Available options: current temp, description, sunset.")
+        print("Other options: @temp to get the temperature.")
         print("Note: A valid US zip code is required for this functionality.")
-        print("@lastfm - access LastFM API to show everyone your favorite tracks or artists!")
-        print("Available options: your top tracks, your top artists.")
+        print("@lastfm - access LastFM API to show everyone your favorite tracks!")
+        print("Other options: @artist to get your favorite artists.")
         print("Note: A LastFM account is required for this functionality.")
         new_entry = input("Please type your new post.\n")
         new_post = Post(new_entry)
@@ -162,36 +162,24 @@ def e_command(option, path, filename):
         print("Post successfully deleted.\n")
 
 def ui_api_bridge(message: str) -> str:
-    accepted_keywords = ["@weather", "@temp", "@lastfm", "@artist"]
-    if accepted_keywords[0] in message:
-        zipcode = input("Please input a valid US zipcode.\n")
-        openweather = weather.OpenWeather(zipcode, "US")
-        openweather.set_apikey(weather_api_key)
-        openweather.load_data()
-        transcluded_msg = openweather.transclude(message)
-    if accepted_keywords[1] in message:
-        zipcode = input("Please input a valid US zipcode.\n")
-        openweather = weather.OpenWeather(zipcode, "US")
-        openweather.set_apikey(weather_api_key)
-        openweather.load_data()
-        transcluded_msg = openweather.transclude(message, "@temp")
-    if accepted_keywords[2] in message:
-        fm_user = input("Please input your LastFM username.\n")
-        last_fm = fm.LastFM(fm_user)
-        last_fm.set_apikey(fm_api_key)
-        last_fm.load_data()
-        transcluded_msg = last_fm.transclude(message)
-    if accepted_keywords[0] in message and accepted_keywords[1] in message:
-        zipcode = input("Please input a valid US zipcode.\n")
-        fm_user = input("Please input your LastFM username.\n")
-        openweather = weather.OpenWeather(zipcode, "US")
-        last_fm = fm.LastFM(fm_user)
-        openweather.set_apikey(weather_api_key)
-        last_fm.set_apikey(fm_api_key)
-        openweather.load_data()
-        last_fm.load_data()
-        transcluded_msg1 = openweather.transclude(message)
-        transcluded_msg = last_fm.transclude(transcluded_msg1)
+    accepted_keywords_weather = ["@weather", "@temp"] 
+    accepted_keywords_fm = ["@lastfm", "@artist"]
+    for word in accepted_keywords_weather:
+        if word in message:
+            zipcode = input("Please input a valid US zipcode.\n")
+            user_w_api_key = input("Please input an API key.")
+            openweather = weather.OpenWeather(zipcode, "US")
+            openweather.set_apikey(user_w_api_key)
+            openweather.load_data()
+            transcluded_msg = openweather.transclude(message, word)
+    for word in accepted_keywords_fm:
+        if word in message:
+            fm_user = input("Please input your LastFM username.\n")
+            user_fm_api_key = input("Please input an API key.")
+            last_fm = fm.LastFM(fm_user)
+            last_fm.set_apikey(user_fm_api_key)
+            last_fm.load_data()
+
     return transcluded_msg
 
 def post_online(path, filename, post: str):
