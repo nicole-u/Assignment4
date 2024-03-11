@@ -6,6 +6,7 @@ api_secret = "b53553283cc9dd90e82c436112353517"
 class LastFM(WebAPI.WebAPI):
     def __init__(self, username = "nutamaaaaa") -> None:
         self.user = username
+        self.api_key = None
         self.fav_track = None
         self.fav_artist = None
 
@@ -21,18 +22,23 @@ class LastFM(WebAPI.WebAPI):
             WebAPI.WebAPI.set_apikey(self, DEV_FM_KEY)
 
     def load_data(self) -> None:
+        """
+        Loads data from given URL.
+        """
         if self.user is None:
             raise ValueError("No username detected. Please try again.")
         top_tracks = f"http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user={self.user}&api_key={self.api_key}&format=json"
         fm_track_data = self._download_url(top_tracks)
-        if type(fm_track_data) == None:
-            raise TypeError("Error with downloading track data from LastFM.")
-        self.fav_track = fm_track_data['toptracks']['track'][0]['name']
+        try:
+            self.fav_track = fm_track_data['toptracks']['track'][0]['name']
+        except TypeError:
+            print("Error with downloading track data from LastFM.")
         top_artists = f"http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={self.user}&api_key={self.api_key}&format=json"
         fm_artist_data = self._download_url(top_artists)
-        if type(fm_artist_data) is None:
-            raise TypeError("Error with downloading artist data from LastFM.")
-        self.fav_artist = fm_artist_data['topartists']['artist'][0]['name']
+        try:
+            self.fav_artist = fm_artist_data['topartists']['artist'][0]['name']
+        except TypeError:
+            print("Error with downloading artist data from LastFM.")
 
     def transclude(self, message: str) -> str:
         '''
