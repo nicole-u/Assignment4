@@ -160,13 +160,18 @@ def e_command(option, path, filename):
         print("Post successfully deleted.\n")
 
 def ui_api_bridge(message: str) -> str:
+    """
+    A function to help bridge the UI
+    and API modules. Handles transclusion
+    and passing parameters to functions.
+    """
     if "@weather" in message and "@lastfm" in message:
         zipcode = input("Please input a valid US zipcode.\n")
         fm_user = input("Please input your LastFM username.\n")
         openweather = weather.OpenWeather(zipcode, "US")
         last_fm = fm.LastFM(fm_user)
         api_key_w_yn = input("Do you have an API key for OpenWeather? (y/n)\n").lower()
-        if api_key_w_yn == "y" or api_key_w_yn == "yes":
+        if api_key_w_yn in ["y", "yes"]:
             user_w_api_key = input("Please input an API key.\n")
             openweather.set_apikey(user_w_api_key)
             openweather.load_data()
@@ -175,7 +180,7 @@ def ui_api_bridge(message: str) -> str:
             openweather.set_apikey(WEATHER_DEV_API_KEY)
             openweather.load_data()
         api_key_fm_yn = input("Do you have an API key for LastFM? (y/n)\n").lower()
-        if api_key_fm_yn == "y" or api_key_fm_yn == "yes":
+        if api_key_fm_yn in ["y", "yes"]:
             user_fm_api_key = input("Please input an API key.\n")
             last_fm.set_apikey(user_fm_api_key)
             last_fm.load_data()
@@ -189,7 +194,7 @@ def ui_api_bridge(message: str) -> str:
     elif "@weather" in message:
         zipcode = input("Please input a valid US zipcode.\n")
         api_key_yn = input("Do you have an API key for OpenWeather? (y/n)\n").lower()
-        if api_key_yn == "y" or api_key_yn == "yes":
+        if api_key_yn in ["y", "yes"]:
             user_w_api_key = input("Please input an API key.\n")
             openweather = weather.OpenWeather(zipcode, "US")
             openweather.set_apikey(user_w_api_key)
@@ -203,7 +208,7 @@ def ui_api_bridge(message: str) -> str:
     elif "@lastfm" in message:
         fm_user = input("Please input your LastFM username.\n")
         api_key_yn = input("Do you have an API key for LastFM? (y/n)\n").lower()
-        if api_key_yn == "y" or api_key_yn == "yes":
+        if api_key_yn in ["y", "yes"]:
             user_fm_api_key = input("Please input an API key.\n")
             last_fm = fm.LastFM(fm_user)
             last_fm.set_apikey(user_fm_api_key)

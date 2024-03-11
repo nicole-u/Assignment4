@@ -23,7 +23,7 @@ class RegularTest(unittest.TestCase):
 
 class DownloadURL(unittest.TestCase):
     """
-    Downloading URL 
+    Downloading URL test
     """
     def test_url(self):
         url_test = OpenWeather(ZIPCODE, CCODE)
@@ -34,6 +34,9 @@ class DownloadURL(unittest.TestCase):
             print("URL Error caught.")
 
 class WrongAPIKey(unittest.TestCase):
+    """
+    Calling the wrong API key
+    """
     def test_wrongAPIKey(self):
         wrong_api_key = OpenWeather(ZIPCODE, CCODE)
         wrong_api_key.set_apikey("not_an_api_key_lol")
@@ -47,6 +50,9 @@ class WrongAPIKey(unittest.TestCase):
 
 
 class NoParameters(unittest.TestCase):
+    """
+    Calling with no parameters
+    """
     def test_no_params(self):
         no_param_weather = OpenWeather()
         no_param_weather.set_apikey(WEATHER_APIKEY)
@@ -57,6 +63,9 @@ class NoParameters(unittest.TestCase):
 
 
 class TranscludeTest(unittest.TestCase):
+    """
+    Testing transclude function
+    """
     def test_transclude(self):
         transclude_time = OpenWeather(ZIPCODE, CCODE)
         transclude_time.set_apikey(WEATHER_APIKEY)
@@ -70,6 +79,9 @@ class TranscludeTest(unittest.TestCase):
 
 
 class NoAPIKey(unittest.TestCase):
+    """
+    Testing without an API key
+    """
     def test_no_key(self):
         no_api_key = OpenWeather(ZIPCODE, CCODE)
         try:

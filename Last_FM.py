@@ -4,6 +4,9 @@ DEV_FM_KEY = "c0a60fb3ace4ff1ea2748e5319a9ee72"
 api_secret = "b53553283cc9dd90e82c436112353517"
 
 class LastFM(WebAPI.WebAPI):
+    """
+    Class that handles all communication with LastFM online API.
+    """
     def __init__(self, username = "nutamaaaaa") -> None:
         self.user = username
         self.api_key = None
@@ -11,10 +14,16 @@ class LastFM(WebAPI.WebAPI):
         self.fav_artist = None
 
     def _download_url(self, url_to_download: str) -> dict:
+        """
+        Child class of WebAPI _download_url method
+        """
         downloaded = WebAPI.WebAPI._download_url(self, url_to_download)
         return downloaded
 
     def set_apikey(self, apikey: str):
+        """
+        Child class of WebAPI set_apikey method
+        """
         try:
             WebAPI.WebAPI.set_apikey(self, apikey)
         except:
@@ -23,7 +32,8 @@ class LastFM(WebAPI.WebAPI):
 
     def load_data(self) -> None:
         """
-        Loads data from given URL.
+        Loads data from given URL and
+        assigns the data to class attributes.
         """
         if self.user is None:
             raise ValueError("No username detected. Please try again.")

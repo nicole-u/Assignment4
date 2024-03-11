@@ -4,7 +4,14 @@ import json
 import requests
 
 class WebAPI(ABC):
+    """
+    Abstract parent class that handles all communication
+    with online web APIs.
+    """
     def _download_url(self, url_to_download: str) -> dict:
+        """
+        Method to download the info from the url
+        """
         response = None
         r_obj = None
 
@@ -38,6 +45,9 @@ class WebAPI(ABC):
         return r_obj
 
     def set_apikey(self, apikey:str) -> None:
+        """
+        Method to set the API key
+        """
         self.api_key = apikey
 
         return self.api_key
