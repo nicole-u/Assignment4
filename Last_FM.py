@@ -34,18 +34,15 @@ class LastFM(WebAPI.WebAPI):
             raise TypeError("Error with downloading artist data from LastFM.")
         self.fav_artist = fm_artist_data['topartists']['artist'][0]['name']
 
-    def transclude(self, message: str, keyword= "@lastfm") -> str:
+    def transclude(self, message: str) -> str:
         '''
         Replaces keywords in a message with associated API data.
         :param message: The message to transclude
             
         :returns: The transcluded message
         '''
+        keyword = "@lastfm"
         if keyword not in message:
             raise ValueError("No keyword found in message.")
-        if keyword == "@lastfm":
-            transcluded = message.replace(keyword, self.fav_track)
-        if keyword == "@artist":
-            transcluded = message.replace(keyword, self.fav_artist)
-        
+        transcluded = message.replace(keyword, self.fav_track)
         return transcluded

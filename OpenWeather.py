@@ -68,17 +68,15 @@ class OpenWeather(WebAPI.WebAPI):
         except TypeError:
             print("Data retrieval failure because of an error with the URL.")
 
-    def transclude(self, message: str, keyword= "@weather") -> str:
+    def transclude(self, message: str) -> str:
         '''
         Replaces keywords in a message with associated API data.
         :param message: The message to transclude
 
         :returns: The transcluded message
         '''
+        keyword = "@weather"
         if keyword not in message:
             raise ValueError("No keyword found in message.")
-        if keyword == "@temp":
-            transcluded_msg = message.replace(keyword, str(self.temperature))
-        elif keyword == "@weather":
-            transcluded_msg = message.replace(keyword, self.description)
+        transcluded_msg = message.replace(keyword, self.description)
         return transcluded_msg
