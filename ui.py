@@ -162,7 +162,7 @@ def e_command(option, path, filename):
         print("Post successfully deleted.\n")
 
 def ui_api_bridge(message: str) -> str:
-    accepted_keywords = ["@weather", "@lastfm"]
+    accepted_keywords = ["@weather", "@temp", "@lastfm", "@artist"]
     if accepted_keywords[0] in message:
         zipcode = input("Please input a valid US zipcode.\n")
         openweather = weather.OpenWeather(zipcode, "US")
@@ -170,6 +170,12 @@ def ui_api_bridge(message: str) -> str:
         openweather.load_data()
         transcluded_msg = openweather.transclude(message)
     if accepted_keywords[1] in message:
+        zipcode = input("Please input a valid US zipcode.\n")
+        openweather = weather.OpenWeather(zipcode, "US")
+        openweather.set_apikey(weather_api_key)
+        openweather.load_data()
+        transcluded_msg = openweather.transclude(message, "@temp")
+    if accepted_keywords[2] in message:
         fm_user = input("Please input your LastFM username.\n")
         last_fm = fm.LastFM(fm_user)
         last_fm.set_apikey(fm_api_key)

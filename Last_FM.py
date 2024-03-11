@@ -4,7 +4,7 @@ fm_api_key = "c0a60fb3ace4ff1ea2748e5319a9ee72"
 api_secret = "b53553283cc9dd90e82c436112353517"
 
 class LastFM(WebAPI.web_api):
-    def __init__(self, username) -> None:
+    def __init__(self, username= "nutamaaaaa") -> None:
         self.user = username
         self.fav_track = None
         self.fav_artist = None

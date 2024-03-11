@@ -1,3 +1,8 @@
+"""
+A class that helps handle connection and data
+downloading from the OpenWeather online API.
+"""
+
 import WebAPI
 
 
@@ -46,34 +51,32 @@ class OpenWeather(WebAPI.web_api):
             raise ValueError("No API key has been inputted.")
         url = f"http://api.openweathermap.org/data/2.5/weather?zip={self.zipcode},{self.country}&appid={self.api_key}"
         returned_data = self._download_url(url)
-        if type(returned_data) is None:
-            raise TypeError("Error with downloading data from OpenWeather.")
-        self.longitude = returned_data['coord']['lon']
-        self.latitude = returned_data['coord']['lat']
-        self.description = returned_data['weather'][0]['description']
-        self.temperature = kelvin_to_fahrenheit(returned_data['main']['temp'])
-        self.high_temp = kelvin_to_fahrenheit(returned_data['main']['temp_max'])
-        self.low_temp = kelvin_to_fahrenheit(returned_data['main']['temp_min'])
-        self.humidity = returned_data['main']['humidity']
-        self.city = returned_data['name']
-        self.sunset = returned_data['sys']['sunset']
+        try:
+            self.longitude = returned_data['coord']['lon']
+            self.latitude = returned_data['coord']['lat']
+            self.description = returned_data['weather'][0]['description']
+            self.temperature = kelvin_to_fahrenheit(returned_data['main']['temp'])
+            self.high_temp = kelvin_to_fahrenheit(returned_data['main']['temp_max'])
+            self.low_temp = kelvin_to_fahrenheit(returned_data['main']['temp_min'])
+            self.humidity = returned_data['main']['humidity']
+            self.city = returned_data['name']
+            self.sunset = returned_data['sys']['sunset']
+        except TypeError:
+            print("Error with retrieving data from URL. ")
 
-    def transclude(self, message: str) -> str:
+    def transclude(self, message: str, keyword= "@weather") -> str:
         '''
         Replaces keywords in a message with associated API data.
         :param message: The message to transclude
 
         :returns: The transcluded message
         '''
-        accepted_keyword = "@weather"
-        if accepted_keyword not in message:
+        transclude_word = keyword
+        if transclude_word not in message:
             raise ValueError("No keyword found in message.")
-        transclude_options = input("Do you want to have current temp or description?").lower()
-        if transclude_options[0] == "c" or transclude_options[0] == "t":
-            transcluded = message.replace(accepted_keyword, self.temperature)
-        elif transclude_options[0] == "d":
-            transcluded = message.replace(accepted_keyword, self.description)
-        else:
-            transclude_options
+        if transclude_word == "@temp":
+            transcluded = message.replace(transclude_word, str(self.temperature))
+        elif transclude_word == "@weather":
+            transcluded = message.replace(transclude_word, self.description)
 
         return transcluded
