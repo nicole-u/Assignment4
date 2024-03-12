@@ -107,7 +107,7 @@ def e_command(option, path, filename):
     p = Path(filepath)
     profile.load_profile(filepath)
     if option == "-usr":
-        print("You will no longer be able to post online with this profile if you change this.")
+        print("If you change the username, you must change the password too to continue posting online.")
         cont_confirmation = input("Are you sure you want to proceed? (y/n)")
         if cont_confirmation.lower() == "y":
             new_user = input("What do you want to change the username to?\n")
@@ -119,8 +119,8 @@ def e_command(option, path, filename):
         else:
             print("Username not changed.")
     elif option == "-pwd":
-        print("You will no longer be able to post online with this profile if you change this.")
-        cont_confirmation = input("Are you sure you want to proceed? (y/n)")
+        print("If you change the password, you must also change the username to continue posting online.")
+        cont_confirmation = input("Are you sure you want to proceed? (y/n)\n")
         if cont_confirmation.lower() == "y":
             new_pwd = input("What do you want to change the password to?\n")
             while " " in new_pwd:
@@ -130,7 +130,7 @@ def e_command(option, path, filename):
             profile.save_profile(filepath)
             print(f"Successfully changed password to {profile.password}.\n")
         else:
-            print("Password not changed.")
+            print("Password not changed.\n")
     elif option == "-bio":
         new_bio = input("What do you want to change the bio to?\n")
         profile.bio = new_bio
@@ -146,7 +146,7 @@ def e_command(option, path, filename):
         new_post = Post(new_entry)
         profile.add_post(new_post)
         profile.save_profile(filepath)
-        print("Would you like to post this online?")
+        print("Would you like to post this online?\n")
         user_choice = input("(y/n)\n").lower()
         if user_choice == "y":
             post_online(path, filename, new_post)
