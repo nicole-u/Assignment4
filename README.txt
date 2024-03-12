@@ -1,0 +1,3 @@
+This assignment expands on Assignment 3 by being able to retrieve data from online APIs and using them in our program. I implemented two keywords (@weather and @lastfm) that are linked to the description and the user's top tracks respectively. Transclusion is called before the post is sent off to the server, so that the program sends over actual words instead of the keywords.
+
+Other than that, I fixed a few things in ui.py and added a function so that it could be more well integrated with the API modules.
